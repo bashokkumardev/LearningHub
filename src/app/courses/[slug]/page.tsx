@@ -57,14 +57,7 @@ export default async function CourseDetailPage({ params }: CourseDetailPageProps
           <div className="glass-card sticky top-24 rounded-2xl p-6">
             <p className="text-sm text-muted">Course Price</p>
             <p className="mt-1 text-3xl font-bold">{formatPrice(course.price)}</p>
-            <p className="mt-1 text-xs text-muted">One-time payment • Lifetime access</p>
-
-            <div className="mt-6 space-y-3 text-sm text-muted">
-              <p className="flex items-center gap-2"><span className="text-accent">✓</span> Lifetime course access</p>
-              <p className="flex items-center gap-2"><span className="text-accent">✓</span> Certificate of completion</p>
-              <p className="flex items-center gap-2"><span className="text-accent">✓</span> Hands-on projects</p>
-              <p className="flex items-center gap-2"><span className="text-accent">✓</span> Community support</p>
-            </div>
+            <p className="mt-1 text-xs text-muted">One-time payment</p>
 
             <div className="mt-6">
               <RazorpayCheckout
