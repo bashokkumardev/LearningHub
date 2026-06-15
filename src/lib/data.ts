@@ -190,7 +190,7 @@ export const resumePackages: ResumePackage[] = [
     id: "resume-basic",
     name: "Basic Resume",
     description: "ATS-friendly resume crafted for freshers and career switchers.",
-    price: 999,
+    price: 69,
     features: [
       "1-page ATS-optimized resume",
       "Keyword optimization",
@@ -204,7 +204,7 @@ export const resumePackages: ResumePackage[] = [
     id: "resume-professional",
     name: "Professional Resume",
     description: "Polished resume with cover letter for mid-level professionals.",
-    price: 1999,
+    price: 99,
     features: [
       "2-page professional resume",
       "Custom cover letter",
@@ -220,13 +220,12 @@ export const resumePackages: ResumePackage[] = [
     id: "resume-executive",
     name: "Executive Package",
     description: "Premium resume suite for senior roles and leadership positions.",
-    price: 3499,
+    price: 149,
     features: [
       "Executive resume + cover letter",
       "LinkedIn headline & summary rewrite",
       "Portfolio/project descriptions",
       "Unlimited revisions for 7 days",
-      "1-on-1 consultation call (30 min)",
       "Delivery in 1 business day",
     ],
     formats: ["PDF", "Word"],

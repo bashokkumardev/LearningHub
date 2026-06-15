@@ -96,7 +96,7 @@ export default function HomePage() {
                     <span className="text-accent">✓</span> ATS keyword optimization
                   </li>
                   <li className="flex items-center gap-2">
-                    <span className="text-accent">✓</span> Packages from ₹999
+                    <span className="text-accent">✓</span> Packages from ₹69
                   </li>
                 </ul>
                 <Link
@@ -110,7 +110,7 @@ export default function HomePage() {
                 <div className="text-center">
                   <span className="text-7xl">📄</span>
                   <p className="mt-4 text-lg font-semibold">PDF & Word Delivery</p>
-                  <p className="text-sm text-muted">Starting at ₹999</p>
+                  <p className="text-sm text-muted">Starting at ₹69</p>
                 </div>
               </div>
             </div>
