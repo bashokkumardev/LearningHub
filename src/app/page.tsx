@@ -43,7 +43,7 @@ export default function HomePage() {
           {/* Stats */}
           <div className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
             {[
-              { value: "7+", label: "Courses" },
+              { value: "8+", label: "Courses" },
               { value: "12K+", label: "Students" },
               { value: "500+", label: "Resumes Built" },
               { value: "200+", label: "Job Listings" },
