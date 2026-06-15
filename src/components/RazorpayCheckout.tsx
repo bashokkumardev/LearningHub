@@ -1,11 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Script from "next/script";
 import type { RazorpayPaymentResponse } from "@/lib/types";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
+function isGithubPagesHost(): boolean {
+  return typeof window !== "undefined" && window.location.hostname.endsWith("github.io");
+}
+
+async function parseJsonResponse<T>(response: Response): Promise<T> {
+  const text = await response.text();
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(
+      "Payment server is unavailable on this demo site. Use local dev or deploy to Vercel for live Razorpay checkout."
+    );
+  }
+}
 
 interface RazorpayCheckoutProps {
   amount: number;
@@ -33,12 +48,19 @@ export default function RazorpayCheckout({
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [onGithubPages, setOnGithubPages] = useState(isStaticExport);
+
+  useEffect(() => {
+    if (isGithubPagesHost()) {
+      setOnGithubPages(true);
+    }
+  }, []);
 
   const handlePayment = async () => {
-    if (isStaticExport) {
+    if (onGithubPages) {
       setStatus("error");
       setMessage(
-        "Payments are disabled on GitHub Pages. Run locally with npm run dev and Razorpay keys for live checkout."
+        "Payments are not available on GitHub Pages. Run locally with npm run dev and Razorpay keys, or deploy to Vercel for live checkout."
       );
       return;
     }
@@ -54,12 +76,23 @@ export default function RazorpayCheckout({
         body: JSON.stringify({ amount, productName }),
       });
 
+      const orderData = await parseJsonResponse<{
+        orderId?: string;
+        amount?: number;
+        currency?: string;
+        keyId?: string;
+        error?: string;
+      }>(orderRes);
+
       if (!orderRes.ok) {
-        const error = await orderRes.json();
-        throw new Error(error.error || "Failed to create order");
+        throw new Error(orderData.error || "Failed to create order");
       }
 
-      const { orderId, amount: orderAmount, currency, keyId } = await orderRes.json();
+      const { orderId, amount: orderAmount, currency, keyId } = orderData;
+
+      if (!orderId || !orderAmount || !currency || !keyId) {
+        throw new Error("Invalid order response from server");
+      }
 
       if (!window.Razorpay) {
         throw new Error("Razorpay SDK not loaded. Please refresh the page.");
@@ -85,7 +118,7 @@ export default function RazorpayCheckout({
             body: JSON.stringify(response),
           });
 
-          const result = await verifyRes.json();
+          const result = await parseJsonResponse<{ success?: boolean; error?: string }>(verifyRes);
 
           if (verifyRes.ok && result.success) {
             setStatus("success");
@@ -118,12 +151,12 @@ export default function RazorpayCheckout({
 
   return (
     <>
-      {!isStaticExport && (
+      {!onGithubPages && (
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       )}
 
       <div className="space-y-3">
-        {isStaticExport && (
+        {onGithubPages && (
           <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-xs text-amber-300">
             Demo site on GitHub Pages — browse courses and jobs. Payments work when deployed with a server (e.g. Vercel).
           </p>
@@ -134,7 +167,7 @@ export default function RazorpayCheckout({
           disabled={loading}
           className={`w-full rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
         >
-          {loading ? "Processing..." : isStaticExport ? "Preview Checkout" : buttonLabel}
+          {loading ? "Processing..." : onGithubPages ? "Preview Checkout" : buttonLabel}
         </button>
 
         {status === "success" && (
